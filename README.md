@@ -17,6 +17,8 @@ A web application centered around providing detailed breakdowns of fragrance not
 CommonScents_v1/
 ├── app.py                 # Main application entry point
 ├── functions/             # Reusable utility functions
+│   └── download_dataset.py # Dataset download utility
+├── data/                  # Dataset CSV files (created after download)
 ├── requirements.txt       # Python dependencies
 └── README.md             # Project documentation
 ```
@@ -28,7 +30,18 @@ CommonScents_v1/
 pip install -r requirements.txt
 ```
 
-2. Run the application:
+2. Download the fragrance dataset (optional):
+```bash
+# Option 1: Run the download function directly
+python functions/download_dataset.py
+
+# Option 2: Use from Python code
+python -c "from functions.download_dataset import download_fragrance_dataset; download_fragrance_dataset()"
+```
+
+The CSV files will be saved to the `data/` folder in the project root.
+
+3. Run the application:
 ```bash
 python app.py
 ```
@@ -48,7 +61,8 @@ python app.py
 **To push this project to GitHub, run these commands in PowerShell or Command Prompt:**
 
 ```powershell
-cd "C:\Users\vigne\Documents\Coding Projects\CommonScents_v1"
+# Navigate to the project directory (adjust path as needed)
+cd CommonScents_v1
 git init
 git add .
 git commit -m "Initial project setup"
@@ -69,7 +83,8 @@ If you want this project as a folder inside an existing repository:
 
 1. **Clone your existing repository** (if you don't have it locally):
 ```bash
-cd "C:\Users\vigne\Documents\Coding Projects"
+# Navigate to your desired parent directory
+cd /path/to/your/projects
 git clone https://github.com/YOUR_USERNAME/YOUR_EXISTING_REPO.git
 ```
 
@@ -90,14 +105,15 @@ git push origin main
 
 If you want to add it to an existing repo without cloning:
 ```bash
-cd "C:\Users\vigne\Documents\Coding Projects\CommonScents_v1"
+# In the CommonScents_v1 directory
+cd CommonScents_v1
 git init
 git add .
 git commit -m "Initial project setup"
 
 # Then in your existing repository:
-cd YOUR_EXISTING_REPO
-git remote add commonscents-v1 "C:\Users\vigne\Documents\Coding Projects\CommonScents_v1"
+cd /path/to/YOUR_EXISTING_REPO
+git remote add commonscents-v1 /path/to/CommonScents_v1
 git fetch commonscents-v1
 git merge -s ours --no-commit commonscents-v1/main
 git read-tree --prefix=CommonScents_v1/ -u commonscents-v1/main
