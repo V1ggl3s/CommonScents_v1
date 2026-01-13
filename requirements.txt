@@ -1,0 +1,13 @@
+# Data Processing and Cleaning
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Data Validation
+pydantic>=2.0.0
+
+# Web Framework (placeholder - to be determined)
+# flask>=2.3.0
+# fastapi>=0.100.0
+
+# Utilities
+python-dotenv>=1.0.0
