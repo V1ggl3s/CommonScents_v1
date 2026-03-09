@@ -16,15 +16,17 @@ ipython>=9.9.0
 # Data Validation
 pydantic>=2.0.0
 
-# Web Framework (placeholder - to be determined)
-# flask>=2.3.0
-# fastapi>=0.100.0
+# Web Framework
+flask>=3.0.0
 
 # Utilities
 python-dotenv>=1.0.0
 
 # Kaggle Dataset Download
 kagglehub>=0.2.0
+
+# Fuzzy String Matching (for typo-tolerant search)
+rapidfuzz>=3.0.0
 
 # Note: Jupyter notebook has compatibility issues on Windows ARM64
 # If needed, install separately: pip install jupyter

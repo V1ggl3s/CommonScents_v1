@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}{{ fragrance.Brand }} - {{ fragrance.Perfume }} | CommonScents{% endblock %}
+
+{% block content %}
+<div class="fragrance-detail">
+    <div class="breadcrumb">
+        <a href="/">← Back to Search</a>
+    </div>
+    
+    <div class="fragrance-header">
+        <h1>{{ fragrance.Brand }}</h1>
+        <h2 class="perfume-name">{{ fragrance.Perfume }}</h2>
+    </div>
+    
+    <div class="fragrance-info-grid">
+        <div class="info-card">
+            <h3>Basic Information</h3>
+            <div class="info-item">
+                <span class="label">Gender:</span>
+                <span class="value">{{ fragrance.Gender or 'Not specified' }}</span>
+            </div>
+            {% if fragrance['Rating Value'] is not none and fragrance['Rating Value'] != '' %}
+            <div class="info-item">
+                <span class="label">Rating:</span>
+                <span class="value">{{ fragrance['Rating Value'] }}%</span>
+            </div>
+            {% endif %}
+            {% if fragrance['Rating Count'] is not none and fragrance['Rating Count'] != '' %}
+            <div class="info-item">
+                <span class="label">Rating Count:</span>
+                <span class="value">{{ fragrance['Rating Count'] }}</span>
+            </div>
+            {% endif %}
+            {% if fragrance.Year is not none and fragrance.Year != '' %}
+            <div class="info-item">
+                <span class="label">Year:</span>
+                <span class="value">{{ fragrance.Year|string|replace('.0', '') }}</span>
+            </div>
+            {% endif %}
+            {% if fragrance.Perfumer1 is not none and fragrance.Perfumer1 != '' %}
+            <div class="info-item">
+                <span class="label">Perfumer:</span>
+                <span class="value">{{ fragrance.Perfumer1 }}</span>
+            </div>
+            {% endif %}
+        </div>
+        
+        {% if fragrance['Main Accords'] is not none and fragrance['Main Accords']|length > 0 %}
+        <div class="info-card">
+            <h3>Main Accords</h3>
+            <div class="tags-container">
+                {% for accord in fragrance['Main Accords'] %}
+                <span class="tag accord-tag">{{ accord }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="notes-section">
+        {% if fragrance.Top is not none and fragrance.Top|length > 0 %}
+        <div class="notes-card">
+            <h3>Top Notes</h3>
+            <div class="tags-container">
+                {% for note in fragrance.Top %}
+                <span class="tag note-tag top-note">{{ note }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if fragrance.Middle is not none and fragrance.Middle|length > 0 %}
+        <div class="notes-card">
+            <h3>Middle Notes</h3>
+            <div class="tags-container">
+                {% for note in fragrance.Middle %}
+                <span class="tag note-tag middle-note">{{ note }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if fragrance.Base is not none and fragrance.Base|length > 0 %}
+        <div class="notes-card">
+            <h3>Base Notes</h3>
+            <div class="tags-container">
+                {% for note in fragrance.Base %}
+                <span class="tag note-tag base-note">{{ note }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    {% if fragrance.url %}
+    <div class="external-link">
+        <a href="{{ fragrance.url }}" target="_blank" rel="noopener noreferrer">
+            View on Fragrantica →
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -25,26 +25,28 @@ CommonScents_v1/
 
 ## Setup
 
-1. Install dependencies:
+### Step 1: Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Download the fragrance dataset (optional):
+### Step 2: Download and Process Data
 ```bash
-# Option 1: Run the download function directly
+# Download dataset from Kaggle (optional - data may already be in data/ folder)
 python functions/download_dataset.py
 
-# Option 2: Use from Python code
-python -c "from functions.download_dataset import download_fragrance_dataset; download_fragrance_dataset()"
+# Process and clean the raw data
+python data_processing.py
 ```
 
-The CSV files will be saved to the `data/` folder in the project root.
+This will create `data/cleaned_data.csv` which the webapp uses.
 
-3. Run the application:
+### Step 3: Run the Web Application
 ```bash
-python app.py
+python webapp.py
 ```
+
+Then open your browser to: `http://localhost:5000`
 
 ## Technology Stack
 

@@ -1,0 +1,42 @@
+App Planning
+
+Streamlined version of Fragrantica
+
+What does it need to deliver:
+Have a robust searchable set of data that can be searched and displays well
+Engaging visuals
+No ads
+Signup to personalise your account
+	- Can create personal collection
+	- Wishlist
+	- Be able to comment and vote on fragrances
+Eventually engage with independent fragrance dupes to push their products
+
+
+Images
+
+API rate limits and costs
+
+Unsplash
+Free: 50 requests/hour
+Paid: Higher limits available
+For 70,000 images: ~1,400 hours on free tier (about 2 months)
+
+Pexels
+Free: 200 requests/hour
+Paid: Higher limits available
+For 70,000 images: ~350 hours on free tier (about 2 weeks)
+
+Recommended approach
+Start with placeholders
+Create a generic placeholder image
+Use it for all fragrances initially
+Download top fragrances first
+Top 1,000 by popularity
+Use API to download automatically
+Add images gradually
+Download 50–200 per day
+Prioritize popular fragrances
+Store image paths in your data
+Add "Image Path" column to CSV
+Update as images are downloaded

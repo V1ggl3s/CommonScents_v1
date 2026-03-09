@@ -42,10 +42,13 @@ ENV/
 Thumbs.db
 
 # Data files (if large)
-*.csv
-*.xlsx
-*.json
-!requirements.txt
+# Uncomment if you want to exclude CSV files from git
+# *.csv
+# !requirements.txt
+
+# Flask
+instance/
+.webassets-cache
 
 # Logs
 *.log

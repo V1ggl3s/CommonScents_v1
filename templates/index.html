@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="search-container">
+    <h2>Search Fragrances</h2>
+    <p class="search-description">Type a brand or perfume name to find fragrances</p>
+    
+    <div class="search-wrapper">
+        <input 
+            type="text" 
+            id="searchInput" 
+            class="search-input"
+            placeholder="Search by brand or perfume name..."
+            autocomplete="off"
+        >
+        <div id="suggestions" class="suggestions-dropdown"></div>
+    </div>
+    
+    <div id="searchInfo" class="search-info"></div>
+</div>
+
+<script>
+const searchInput = document.getElementById('searchInput');
+const suggestionsDiv = document.getElementById('suggestions');
+const searchInfo = document.getElementById('searchInfo');
+let currentSuggestions = [];
+
+// Debounce function to limit API calls
+let searchTimeout;
+searchInput.addEventListener('input', function(e) {
+    const query = e.target.value.trim();
+    
+    clearTimeout(searchTimeout);
+    
+    if (query.length < 2) {
+        suggestionsDiv.innerHTML = '';
+        suggestionsDiv.classList.remove('show');
+        searchInfo.textContent = '';
+        return;
+    }
+    
+    searchTimeout = setTimeout(() => {
+        fetchSuggestions(query);
+    }, 300); // Wait 300ms after user stops typing
+});
+
+function fetchSuggestions(query) {
+    fetch(`/api/search?q=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(data => {
+            currentSuggestions = data;
+            displaySuggestions(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            suggestionsDiv.innerHTML = '';
+        });
+}
+
+function displaySuggestions(suggestions) {
+    if (suggestions.length === 0) {
+        suggestionsDiv.innerHTML = '<div class="suggestion-item no-results">No results found</div>';
+        suggestionsDiv.classList.add('show');
+        searchInfo.textContent = '';
+        return;
+    }
+    
+    suggestionsDiv.innerHTML = suggestions.map(item => `
+        <div class="suggestion-item" data-id="${item.id}" onclick="selectFragrance(${item.id})">
+            <strong>${escapeHtml(item.brand)}</strong> - ${escapeHtml(item.perfume)}
+        </div>
+    `).join('');
+    
+    suggestionsDiv.classList.add('show');
+    searchInfo.textContent = `Found ${suggestions.length} suggestion${suggestions.length !== 1 ? 's' : ''}`;
+}
+
+function selectFragrance(id) {
+    window.location.href = `/fragrance/${id}`;
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Close suggestions when clicking outside
+document.addEventListener('click', function(e) {
+    if (!searchInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+        suggestionsDiv.classList.remove('show');
+    }
+});
+
+// Handle keyboard navigation
+searchInput.addEventListener('keydown', function(e) {
+    const suggestions = suggestionsDiv.querySelectorAll('.suggestion-item:not(.no-results)');
+    
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const current = suggestionsDiv.querySelector('.suggestion-item.highlighted');
+        if (current) {
+            current.classList.remove('highlighted');
+            const next = current.nextElementSibling;
+            if (next && !next.classList.contains('no-results')) {
+                next.classList.add('highlighted');
+            }
+        } else if (suggestions.length > 0) {
+            suggestions[0].classList.add('highlighted');
+        }
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const current = suggestionsDiv.querySelector('.suggestion-item.highlighted');
+        if (current) {
+            current.classList.remove('highlighted');
+            const prev = current.previousElementSibling;
+            if (prev && !prev.classList.contains('no-results')) {
+                prev.classList.add('highlighted');
+            }
+        }
+    } else if (e.key === 'Enter') {
+        e.preventDefault();
+        const highlighted = suggestionsDiv.querySelector('.suggestion-item.highlighted');
+        if (highlighted) {
+            const id = highlighted.getAttribute('data-id');
+            selectFragrance(id);
+        } else if (currentSuggestions.length === 1) {
+            selectFragrance(currentSuggestions[0].id);
+        }
+    } else if (e.key === 'Escape') {
+        suggestionsDiv.classList.remove('show');
+    }
+});
+</script>
+{% endblock %}
