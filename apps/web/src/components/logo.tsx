@@ -74,7 +74,7 @@ export function CommonScentsMotif({
             opacity: 0.85,
           }}
         >
-          Discover · Understand · Curate · Collect
+          Discover · Curate · Collect
         </div>
 
         {/* Bottom rule */}
@@ -184,7 +184,7 @@ export function CommonScentsNavLogo({ className = "" }: { className?: string }) 
           className="mt-0.5 text-gold"
           style={{ fontFamily: "'Tenor Sans', sans-serif", fontSize: "0.44rem", letterSpacing: "0.35em", textTransform: "uppercase", opacity: 0.8 }}
         >
-          Discover · Understand · Curate · Collect
+          Discover · Curate · Collect
         </span>
       </div>
     </div>

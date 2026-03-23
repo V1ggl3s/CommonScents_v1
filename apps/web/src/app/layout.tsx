@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CommonScents — Luxury Fragrance Discovery",
+  title: "CommonScents — Discover, Curate, Collect",
   description:
-    "Discover 70,000+ perfumes. Build your collection, find affordable alternatives, and explore the world of scent.",
+    "Discover, Curate, Collect. Explore 70,000+ fragrances, build your collection, and find the scents that define you.",
 };
 
 export default function RootLayout({

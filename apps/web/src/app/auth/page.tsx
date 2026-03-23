@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { useUser } from "@/lib/auth";
-import { CommonScentsNavLogo } from "@/components/logo";
+import { CommonScentsMotif } from "@/components/logo";
 import Link from "next/link";
 
 const BG_IMAGES = [
@@ -114,11 +114,9 @@ function AuthForm() {
       >
         <div className="rounded-2xl border border-gold/15 bg-warm-charcoal/80 p-8 shadow-2xl shadow-black/40 backdrop-blur-lg sm:p-10">
           {/* Logo */}
-          <div className="flex justify-center mb-6">
-            <Link href="/">
-              <CommonScentsNavLogo />
-            </Link>
-          </div>
+          <Link href="/" className="flex justify-center mb-6">
+            <CommonScentsMotif size="sm" animateIn={false} />
+          </Link>
 
           {/* Gold rule */}
           <div className="h-px w-full bg-gradient-to-r from-transparent via-gold/40 to-transparent mb-8" />

@@ -1,15 +1,16 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { CommonScentsMotif } from "@/components/logo";
+import { useUser, getUserInitials } from "@/lib/auth";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 // ─── Hue palette — one per rotating word ─────────────────────────────────────
 const WORD_HUES = [
   { gold: "#b89a5a", glow: "rgba(184,154,90,0.22)" },   // Discover
-  { gold: "#c4965f", glow: "rgba(196,150,95,0.22)" },   // Understand
   { gold: "#a09060", glow: "rgba(160,144,96,0.22)" },   // Curate
   { gold: "#ba8a4a", glow: "rgba(186,138,74,0.22)" },   // Collect
 ];
@@ -76,9 +77,24 @@ function BotanicalOverlay() {
 }
 
 export function HeroSection() {
-  const titles = useMemo(() => ["Discover", "Understand", "Curate", "Collect"], []);
+  const titles = useMemo(() => ["Discover", "Curate", "Collect"], []);
   const [titleNumber, setTitleNumber] = useState(0);
   const [hue, setHue] = useState(WORD_HUES[0]);
+  const { user, loading: authLoading, signOut } = useUser();
+  const [authDropdownOpen, setAuthDropdownOpen] = useState(false);
+  const authDropdownRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+
+  // Close auth dropdown on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (authDropdownRef.current && !authDropdownRef.current.contains(e.target as Node)) {
+        setAuthDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
   // Two fixed image slots — we never re-key them, only swap src/opacity
   const [slotA, setSlotA] = useState({ src: BG_IMAGES[0], opacity: 0.22 });
   const [slotB, setSlotB] = useState({ src: BG_IMAGES[1], opacity: 0 });
@@ -265,12 +281,66 @@ export function HeroSection() {
         ))}
       </div>
 
-      {/* ── Logo with parallax ── */}
+      {/* ── Logo row with auth icon ── */}
       <motion.div
         style={{ y: logoY }}
         className="relative z-10 flex w-full flex-col items-center justify-center pt-14 pb-0"
       >
         <CommonScentsMotif size="md" animateIn />
+
+        {/* Auth icon — top-right, vertically centred with logo */}
+        {!authLoading && (
+          <div className="absolute right-6 top-[81px]" ref={authDropdownRef}>
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setAuthDropdownOpen((o) => !o)}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-ivory/80 backdrop-blur-sm transition-all hover:bg-white/20 hover:ring-2 hover:ring-gold/30"
+                  style={{ fontFamily: "'Tenor Sans', sans-serif", fontSize: "0.6rem", fontWeight: 600, letterSpacing: "0.05em" }}
+                  aria-label="Account menu"
+                >
+                  {getUserInitials(user)}
+                </button>
+                {authDropdownOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-44 overflow-hidden rounded-xl border border-gold/15 bg-warm-charcoal/95 shadow-xl shadow-black/30 backdrop-blur-md">
+                    <Link
+                      href="/profile"
+                      onClick={() => setAuthDropdownOpen(false)}
+                      className="flex w-full items-center gap-2 px-4 py-3 text-left text-ivory/70 transition-colors hover:bg-gold/10 hover:text-ivory"
+                      style={{ fontFamily: "'Tenor Sans', sans-serif", fontSize: "0.6rem", letterSpacing: "0.15em", textTransform: "uppercase" }}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="8" r="4" /><path d="M4 21c0-3.3 3.6-6 8-6s8 2.7 8 6" />
+                      </svg>
+                      My Profile
+                    </Link>
+                    <div className="h-px bg-gold/10" />
+                    <button
+                      onClick={() => { signOut(); setAuthDropdownOpen(false); }}
+                      className="flex w-full items-center gap-2 px-4 py-3 text-left text-ivory/70 transition-colors hover:bg-gold/10 hover:text-ivory"
+                      style={{ fontFamily: "'Tenor Sans', sans-serif", fontSize: "0.6rem", letterSpacing: "0.15em", textTransform: "uppercase" }}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" /><polyline points="16,17 21,12 16,7" /><line x1="21" y1="12" x2="9" y2="12" />
+                      </svg>
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                href={`/auth?redirect=${encodeURIComponent(pathname)}`}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-ivory/20 text-ivory/50 backdrop-blur-sm transition-all hover:border-gold/50 hover:text-gold"
+                aria-label="Sign in"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="8" r="4" /><path d="M4 21c0-3.3 3.6-6 8-6s8 2.7 8 6" />
+                </svg>
+              </Link>
+            )}
+          </div>
+        )}
       </motion.div>
 
       {/* ── Main content with parallax ── */}

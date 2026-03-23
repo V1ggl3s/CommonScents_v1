@@ -90,3 +90,9 @@
 /* Slow cross-fade for background images */
 @keyframes img-fade-in  { from { opacity: 0; } to { opacity: 0.18; } }
 @keyframes img-fade-out { from { opacity: 0.18; } to { opacity: 0; } }
+
+/* Brand conveyor belt — 2 copies, -50% = one full set, seamless loop */
+@keyframes brand-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
