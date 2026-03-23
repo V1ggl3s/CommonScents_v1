@@ -11,6 +11,7 @@ downloads/
 eggs/
 .eggs/
 lib/
+!apps/web/src/lib/
 lib64/
 parts/
 sdist/
@@ -52,3 +53,11 @@ instance/
 
 # Logs
 *.log
+
+# Node
+node_modules/
+.next/
+out/
+
+# Supabase
+supabase/.temp/

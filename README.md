@@ -1,128 +1,109 @@
-# CommonScents - Fragrance Notes Breakdown Webapp
+# CommonScents
 
-A web application centered around providing detailed breakdowns of fragrance notes for a comprehensive list of fragrances by various manufacturers and producers.
+A luxury fragrance discovery platform. Search 70,000+ perfumes, build your collection, discover affordable alternatives, and explore the world of scent.
 
-## Features
+## Architecture
 
-- Complete fragrance database with detailed note breakdowns
-- Visual graphics for each fragrance
-- Best time of day recommendations
-- Seasonal wearing recommendations
-- Similar fragrance comparisons
-- Vibe and mood descriptions
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| Frontend | Next.js 16 (React, TypeScript, Tailwind) | SSR, App Router, modern UI |
+| Database | Supabase (PostgreSQL) | Data, Auth, Storage, RLS |
+| ETL | Python (pandas) | Offline data processing |
+| UI Components | shadcn/ui + Magic UI | Luxury design system |
+| Animations | Framer Motion | Smooth transitions, scroll-driven effects |
 
 ## Project Structure
 
 ```
 CommonScents_v1/
-├── app.py                 # Main application entry point
-├── functions/             # Reusable utility functions
-│   └── download_dataset.py # Dataset download utility
-├── data/                  # Dataset CSV files (created after download)
-├── requirements.txt       # Python dependencies
-└── README.md             # Project documentation
+├── apps/web/                    # Next.js frontend
+│   └── src/
+│       ├── app/                 # Routes (/, /search, /fragrance/[id])
+│       ├── components/          # React components
+│       │   ├── home/            # Homepage sections
+│       │   ├── layout/          # Shared layout
+│       │   └── ui/              # shadcn + Magic UI components
+│       └── lib/                 # Supabase client, types, utilities
+├── scripts/
+│   ├── etl/                     # Python data pipeline
+│   │   ├── data_processing.py   # Main ETL runner
+│   │   ├── clean_raw_data.py    # Data cleaning + concentration extraction
+│   │   ├── infer_metadata.py    # Day/night + season inference
+│   │   ├── sync_to_supabase.py  # Push to Supabase
+│   │   ├── load_dataframes.py   # CSV loading utilities
+│   │   └── download_dataset.py  # Kaggle dataset download
+│   └── price_fetch/             # Pricing pipeline (future)
+├── supabase/
+│   └── migrations/              # SQL schema + RLS policies
+│       └── 001_initial_schema.sql
+├── data/                        # CSV datasets (gitignored if large)
+├── styles/                      # Aceternity UI reference components
+└── functions/                   # Legacy Python (archived)
 ```
 
-## Setup
+## Getting Started
 
-### Step 1: Install Dependencies
+### Prerequisites
+
+- Node.js 18+ and npm
+- Python 3.10+
+- A Supabase project ([supabase.com](https://supabase.com))
+
+### 1. Frontend Setup
+
 ```bash
+cd apps/web
+npm install
+npm run dev
+```
+
+Visit `http://localhost:3000`.
+
+### 2. Environment Variables
+
+Copy `.env.example` to `.env` at the project root and fill in your Supabase credentials:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
+SUPABASE_SERVICE_KEY=eyJ...
+```
+
+### 3. Database Setup
+
+Run the migration SQL in your Supabase SQL Editor:
+
+```
+supabase/migrations/001_initial_schema.sql
+```
+
+This creates all tables, indexes, triggers, and RLS policies.
+
+### 4. ETL Pipeline
+
+```bash
+cd scripts/etl
 pip install -r requirements.txt
+python data_processing.py       # Clean raw CSV
+python sync_to_supabase.py      # Push to Supabase
 ```
 
-### Step 2: Download and Process Data
-```bash
-# Download dataset from Kaggle (optional - data may already be in data/ folder)
-python functions/download_dataset.py
+## Key Features
 
-# Process and clean the raw data
-python data_processing.py
-```
+- **Immersive Homepage**: 6-section scroll narrative with 3D spinning bottle animation
+- **Full-Text Search**: PostgreSQL `tsvector` + `pg_trgm` fuzzy matching
+- **Fragrance Detail Pages**: Notes, accords, ratings, time/season, pricing
+- **User Accounts**: Supabase Auth with profile, ratings, collections, wishlists
+- **Similar & Clones**: Algorithmic similarity + curated clone/inspiration pairs
+- **Price Estimates**: Google Custom Search + community reports
+- **Market Segments**: Niche, Designer, Middle Eastern, Mid Tier categorization
 
-This will create `data/cleaned_data.csv` which the webapp uses.
+## Design
 
-### Step 3: Run the Web Application
-```bash
-python webapp.py
-```
+The visual language draws from luxury fragrance boutiques — warm ivory and gold palette, serif headings (Cormorant Garamond), clean sans body (DM Sans), and considered motion design.
 
-Then open your browser to: `http://localhost:5000`
+## Tech Stack Details
 
-## Technology Stack
-
-- Python
-- Data processing and cleaning libraries (pandas, numpy)
-- Web framework (to be determined)
-
-## GitHub Setup
-
-**Repository:** https://github.com/V1ggl3s/CommonScents_v1.git
-
-### Quick Setup (Recommended)
-
-**To push this project to GitHub, run these commands in PowerShell or Command Prompt:**
-
-```powershell
-# Navigate to the project directory (adjust path as needed)
-cd CommonScents_v1
-git init
-git add .
-git commit -m "Initial project setup"
-git branch -M main
-git remote add origin https://github.com/V1ggl3s/CommonScents_v1.git
-git push -u origin main
-```
-
-**Or use the provided scripts:**
-- Run `push_to_github.ps1` in PowerShell
-- Or run `push_to_github.bat` in Command Prompt
-
-### Alternative Options
-
-### Option 2: Push to a Subfolder in an Existing Repository
-
-If you want this project as a folder inside an existing repository:
-
-1. **Clone your existing repository** (if you don't have it locally):
-```bash
-# Navigate to your desired parent directory
-cd /path/to/your/projects
-git clone https://github.com/YOUR_USERNAME/YOUR_EXISTING_REPO.git
-```
-
-2. **Copy the CommonScents_v1 folder into the cloned repository**:
-```bash
-# Copy the entire CommonScents_v1 folder into your existing repo folder
-```
-
-3. **Navigate to your existing repository and commit**:
-```bash
-cd YOUR_EXISTING_REPO
-git add CommonScents_v1/
-git commit -m "Add CommonScents_v1 project"
-git push origin main
-```
-
-### Option 3: Add as Subfolder Using Git Subtree (Advanced)
-
-If you want to add it to an existing repo without cloning:
-```bash
-# In the CommonScents_v1 directory
-cd CommonScents_v1
-git init
-git add .
-git commit -m "Initial project setup"
-
-# Then in your existing repository:
-cd /path/to/YOUR_EXISTING_REPO
-git remote add commonscents-v1 /path/to/CommonScents_v1
-git fetch commonscents-v1
-git merge -s ours --no-commit commonscents-v1/main
-git read-tree --prefix=CommonScents_v1/ -u commonscents-v1/main
-git commit -m "Add CommonScents_v1 as subfolder"
-git push origin main
-```
-
-## Development
-
-This project is in initial setup phase. Core functionality will be implemented in subsequent development phases.
+- **shadcn/ui**: Command, Card, Dialog, Sheet, Badge, Separator, Avatar, Tooltip, Input
+- **Magic UI**: Marquee, BlurFade, NumberTicker, ShimmerButton
+- **Framer Motion**: Page transitions, scroll-driven animations, staggered reveals
